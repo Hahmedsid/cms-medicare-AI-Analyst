@@ -1,0 +1,11 @@
+# Never upload these to GitHub
+*.csv
+*.db
+.env
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+*.egg-info/
+.DS_Store
+*.txt
+setup.py
