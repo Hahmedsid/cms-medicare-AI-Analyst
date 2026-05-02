@@ -11,7 +11,7 @@
 
 ---
 
-## 🚀 Live Demo
+## Live Demo
 
 **[→ Try it live: healthcare-analytics-copilot.streamlit.app](https://healthcare-analytics-copilot.streamlit.app/)**
 
@@ -19,7 +19,7 @@ No setup required. Click any example question in the sidebar to see the agent in
 
 ---
 
-## 📸 Screenshots
+## Screenshots
 
 ### Homepage
 ![Homepage](https://raw.githubusercontent.com/Hahmedsid/cms-medicare-AI-Analyst/main/screenshot_homepage.png)
@@ -32,7 +32,7 @@ No setup required. Click any example question in the sidebar to see the agent in
 
 ---
 
-## 💡 What It Does
+## What It Does
 
 Healthcare revenue cycle teams spend hours writing SQL queries to answer basic business questions. This agent eliminates that friction entirely.
 
@@ -47,7 +47,7 @@ Healthcare revenue cycle teams spend hours writing SQL queries to answer basic b
 
 ---
 
-## 🏥 The Business Problem
+## The Business Problem
 
 Medicare providers in Texas billed **billions of dollars** in 2023 — but collected only a fraction of what they charged. The gap between what's billed and what Medicare pays is called **revenue leakage**, and it represents one of the most significant financial challenges facing health systems today.
 
@@ -61,7 +61,7 @@ This tool lets revenue cycle directors, CFOs, and BI analysts explore that gap i
 
 ---
 
-## 🏗️ Architecture
+## Architecture
 
 ```
 User Question (plain English)
@@ -84,7 +84,7 @@ User Question (plain English)
 
 ---
 
-## 🛠️ Tech Stack
+## Tech Stack
 
 | Component | Technology |
 |-----------|-----------|
@@ -99,7 +99,7 @@ User Question (plain English)
 
 ---
 
-## 📊 Data
+## Data
 
 **Source:** [CMS Medicare Physician & Other Practitioners by Provider and Service (2023)](https://data.cms.gov/provider-summary-by-type-of-service/medicare-physician-other-practitioners/medicare-physician-other-practitioners-by-provider-and-service)
 
@@ -117,7 +117,7 @@ User Question (plain English)
 
 ---
 
-## ⚙️ How to Run Locally
+## How to Run Locally
 
 ### Prerequisites
 - Python 3.12+
@@ -153,7 +153,7 @@ To run with the complete 671,400-row Texas dataset:
 
 ---
 
-## 📁 Project Structure
+## Project Structure
 
 ```
 cms-medicare-AI-Analyst/
@@ -170,7 +170,7 @@ cms-medicare-AI-Analyst/
 
 ---
 
-## 🔒 Security
+## Security
 
 - API key stored as Streamlit secret — never in code or GitHub
 - SQL safety guardrail blocks `DROP`, `DELETE`, `UPDATE`, `INSERT`, `ALTER`
@@ -178,7 +178,7 @@ cms-medicare-AI-Analyst/
 
 ---
 
-## 🧠 Key Design Decisions
+## Key Design Decisions
 
 **Schema injection** — The full database schema is injected into Claude's system prompt on every request. This prevents hallucinated column names and enforces correct SQLite syntax.
 
@@ -190,7 +190,7 @@ cms-medicare-AI-Analyst/
 
 ---
 
-## 👤 About the Author
+## About the Author
 
 **Hassaan Ahmed Siddiqui** — BI Analyst with 5+ years of experience in SQL, Tableau, Power BI, and data modeling. Currently building AI-enabled analytics solutions that bridge enterprise BI and agentic AI.
 
@@ -200,7 +200,7 @@ cms-medicare-AI-Analyst/
 
 ---
 
-## 📄 License
+## License
 
 MIT License — free to use, modify, and distribute.
 
