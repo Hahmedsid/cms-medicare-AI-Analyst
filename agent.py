@@ -14,6 +14,56 @@ import sqlite3
 import re
 import anthropic
 
+import os
+import sqlite3
+import pandas as pd
+
+def ensure_database():
+    """
+    If cms_texas.db doesn't exist, build it from sample_data.csv.
+    This runs automatically on Streamlit Cloud where only the CSV is available.
+    """
+    if os.path.exists("cms_texas.db"):
+        return  # Database already exists — nothing to do
+
+    if not os.path.exists("sample_data.csv"):
+        raise FileNotFoundError(
+            "Neither cms_texas.db nor sample_data.csv found. "
+            "Please run the setup notebook first."
+        )
+
+    print("Building database from sample_data.csv...")
+
+    df = pd.read_csv("sample_data.csv", dtype=str)
+
+    # Convert numeric columns
+    numeric_cols = [
+        "Tot_Benes", "Tot_Srvcs", "Avg_Sbmtd_Chrg",
+        "Avg_Mdcr_Alowd_Amt", "Avg_Mdcr_Pymt_Amt",
+        "Tot_Sbmtd_Chrg", "Tot_Mdcr_Alowd_Amt", "Tot_Mdcr_Pymt_Amt",
+        "Reimbursement_Rate_Pct", "Revenue_Leakage"
+    ]
+    for col in numeric_cols:
+        if col in df.columns:
+            df[col] = pd.to_numeric(df[col], errors="coerce")
+
+    conn = sqlite3.connect("cms_texas.db")
+    df.to_sql("cms_billing", conn, if_exists="replace", index=False)
+
+    # Create indexes
+    cur = conn.cursor()
+    cur.execute("CREATE INDEX IF NOT EXISTS idx_type ON cms_billing (Rndrng_Prvdr_Type)")
+    cur.execute("CREATE INDEX IF NOT EXISTS idx_city ON cms_billing (Rndrng_Prvdr_City)")
+    cur.execute("CREATE INDEX IF NOT EXISTS idx_hcpcs ON cms_billing (HCPCS_Cd)")
+    conn.commit()
+    conn.close()
+
+    print(f"✓ Database built from sample_data.csv ({len(df):,} rows)")
+
+
+# Run on import — builds DB from CSV if needed
+ensure_database()
+
 # ── Configuration ─────────────────────────────────────────────────────────────
 
 DB_PATH = "cms_texas.db"
@@ -26,8 +76,8 @@ You are a healthcare business intelligence analyst assistant.
 You have access to a SQLite database called cms_texas.db.
 
 It contains one table called cms_billing with real Texas Medicare
-billing data for 2023. The table has 671,400 rows — one row per
-provider per procedure code.
+billing data for 2023 focused on Houston providers.
+The table has 10,000 rows — one row per provider per procedure code.
 
 TABLE: cms_billing
 

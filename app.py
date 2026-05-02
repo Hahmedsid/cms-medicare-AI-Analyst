@@ -385,9 +385,9 @@ def build_chart(
 with st.sidebar:
     st.markdown("### 🏥 Healthcare Analytics Copilot")
     st.markdown(
-        "Ask any question about **Texas Medicare billing data (2023)** "
+        "Ask any question about **Houston Medicare billing data (2023)** "
         "in plain English. The AI agent converts your question into SQL, "
-        "queries 671,400 provider records, and generates an executive insight."
+        "queries 10,000 records, and generates an executive insight."
     )
 
     st.divider()
@@ -399,12 +399,12 @@ with st.sidebar:
     st.markdown("*Click any question to run it instantly*")
 
     examples = [
-        "Which specialties have the worst reimbursement rates in Texas?",
+        "Which specialties have the worst reimbursement rates in Houston?",
         "Top 10 Houston providers by total revenue leakage",
-        "Compare reimbursement rates between facility and office settings",
-        "Which cities in Texas have the highest average revenue leakage?",
-        "Top 10 Cardiology providers in Texas by total billed amount",
-        "What is the average reimbursement rate for Diagnostic Radiology?",
+        "Compare reimbursement rates between facility and office settings in Houston",
+        "Top 10 Cardiology providers in Houston by total billed amount",
+        "What is the average reimbursement rate for Diagnostic Radiology in Houston?",
+        "Which Houston providers bill the most for Emergency Medicine?",
     ]
 
     for q in examples:
@@ -420,8 +420,8 @@ with st.sidebar:
     )
     st.markdown("""
     - **Source:** CMS Medicare 2023
-    - **Scope:** Texas providers only
-    - **Rows:** 671,400 records
+    - **Scope:** Houston, Texas providers
+    - **Rows:** 10,000 records (sample)
     - **AI Model:** Claude Sonnet 4.6
     """)
 
@@ -435,7 +435,7 @@ st.markdown("""
 <div class="app-header">
     <div class="app-title">🏥 Healthcare Analytics Copilot</div>
     <div class="app-subtitle">
-        Querying Texas Medicare Billing Data (CMS 2023) with Plain English
+        Querying Houston Medicare Billing Data (CMS 2023) with Plain English
         — Powered by Claude AI
     </div>
 </div>
@@ -449,7 +449,7 @@ with col1:
     user_question = st.text_input(
         "Ask a question",
         value=st.session_state.current_question,
-        placeholder="e.g. Which specialties have the worst reimbursement rates in Texas?",
+        placeholder="e.g. Which specialties have the worst reimbursement rates in Houston?",
         label_visibility="collapsed",
         key="question_input"
     )
