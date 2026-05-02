@@ -115,18 +115,62 @@ DESC_HINTS  = ["desc", "name", "type", "city", "spec", "prvdr", "zip"]
 
 # ── Smart chart type detector ─────────────────────────────────────────────────
 
-def detect_chart_type(df: pd.DataFrame, label_col: str, value_col: str) -> str:
+def detect_chart_type(
+    df           : pd.DataFrame,
+    label_col    : str,
+    value_col    : str,
+    user_question: str = ""
+) -> str:
     """
-    Determine best chart type from actual data characteristics.
-    """
-    label_lower = label_col.lower()
-    value_lower = value_col.lower()
+    Determine best chart type from data characteristics.
 
-    # Rule 1 — time series by column name
+    Rules in priority order:
+      1. User explicitly requests a chart type       → respect it always
+      2. User asks for percentage/share/proportion   → pie
+      3. Label column looks like dates               → line
+      4. Value column is a rate/percentage           → bar (never pie)
+      5. Everything else                             → bar
+    
+    Pie chart ONLY shows when user explicitly asks for
+    percentage, share, proportion, or breakdown.
+    """
+    label_lower    = label_col.lower()
+    value_lower    = value_col.lower()
+    question_lower = user_question.lower()
+
+    # ── Priority 1: User explicitly requested a chart type ────────
+    if any(phrase in question_lower for phrase in [
+        "bar chart", "bar graph", "horizontal bar", "column chart"
+    ]):
+        return "bar"
+
+    if any(phrase in question_lower for phrase in [
+        "line chart", "line graph", "trend", "over time", "by month",
+        "by year", "by quarter", "by week"
+    ]):
+        return "line"
+
+    if any(phrase in question_lower for phrase in [
+        "table", "list all", "show all", "all rows", "full list"
+    ]):
+        return "table"
+
+    # ── Priority 2: Pie ONLY when user asks for percentage/share ──
+    # Pie chart is only meaningful for part-of-whole questions
+    PIE_TRIGGERS = [
+        "percentage", "percent", "proportion", "share",
+        "breakdown", "distribution", "composition",
+        "what portion", "what fraction", "how much of",
+        "% of", "out of total", "relative to",
+        "pie chart", "pie graph", "donut"
+    ]
+    if any(trigger in question_lower for trigger in PIE_TRIGGERS):
+        return "pie"
+
+    # ── Priority 3: Time series detection ─────────────────────────
     if any(hint in label_lower for hint in DATE_HINTS):
         return "line"
 
-    # Rule 1b — time series by parsing values as dates
     try:
         parsed = pd.to_datetime(df[label_col], errors="coerce")
         if parsed.notna().sum() > len(df) * 0.7:
@@ -134,16 +178,13 @@ def detect_chart_type(df: pd.DataFrame, label_col: str, value_col: str) -> str:
     except Exception:
         pass
 
-    # Rule 2 — never use pie for rate/percentage columns
-    # Rates don't add up to 100% so pie chart is misleading
+    # ── Priority 4: Never pie for rates ───────────────────────────
+    # Reimbursement rates, percentages don't sum to 100%
+    # so a pie chart would be mathematically misleading
     if any(hint in value_lower for hint in RATE_HINTS):
         return "bar"
 
-    # Rule 3 — part of whole only for true proportions
-    if df[label_col].nunique() <= 6:
-        return "pie"
-
-    # Rule 4 — default
+    # ── Priority 5: Default to bar ────────────────────────────────
     return "bar"
 
 # ── Best column picker ────────────────────────────────────────────────────────
